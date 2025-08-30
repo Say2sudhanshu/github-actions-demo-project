@@ -1,0 +1,27 @@
+# A simple CI pipeline to verify Azure Pipelines is working.
+# This pipeline targets a .NET Core project.
+
+trigger:
+- main # This pipeline will trigger automatically on pushes to the 'main' branch
+
+pool:
+  vmImage: 'ubuntu-latest' # Specifies the virtual machine image to use for the build agent
+
+steps:
+- checkout: self # Checks out the source code from the repository
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build project'
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj' # Finds and builds all .csproj files in the repository
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run tests'
+  inputs:
+    command: 'test'
+    projects: '**/*.csproj'
+    arguments: '--configuration Release' # Runs tests with the Release configuration
+
+- script: echo 'CI pipeline completed successfully!'
+  displayName: 'Display success message'
